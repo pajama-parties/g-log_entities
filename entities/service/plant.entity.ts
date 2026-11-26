@@ -16,8 +16,8 @@ import { UserProfile } from './user-profile.entity.js';
 /** service_db.plants — 화분 (GET /pots, /pots/managed, POST /pots) */
 @Entity({ name: 'plants' })
 @Index('idx_plants_user', ['userId'])
-// TypeORM은 MySQL CHECK를 마이그레이션에 만들지 않음 → InitService 마이그레이션에 직접 추가함
-@Check('chk_plants_threshold', 'dry_threshold >= 5 AND wet_threshold <= 95 AND dry_threshold < wet_threshold')
+// TypeORM은 MySQL CHECK를 마이그레이션에 만들지 않음 → 마이그레이션에 직접 추가함 (InitService, PlantThresholdDefault)
+@Check('chk_plants_threshold', 'dry_threshold >= 0 AND wet_threshold <= 100 AND dry_threshold < wet_threshold')
 export class Plant {
   @PrimaryGeneratedColumn({ name: 'plant_id', type: 'bigint' })
   id: number;
@@ -43,12 +43,12 @@ export class Plant {
   @Column({ type: 'varchar', length: 50, nullable: true })
   place: string | null;
 
-  /** range[0] / Range.lower (건조 기준 %) */
-  @Column({ name: 'dry_threshold', type: 'tinyint', unsigned: true, default: 35 })
+  /** range[0] / Range.lower (건조 기준 %). 기본 0 = 사용자가 기준을 정하기 전까지 건조 경보 없음 */
+  @Column({ name: 'dry_threshold', type: 'tinyint', unsigned: true, default: 0 })
   dryThreshold: number;
 
-  /** range[1] / Range.upper (과습 기준 %) */
-  @Column({ name: 'wet_threshold', type: 'tinyint', unsigned: true, default: 80 })
+  /** range[1] / Range.upper (과습 기준 %). 기본 100 = 사용자가 기준을 정하기 전까지 과습 경보 없음 */
+  @Column({ name: 'wet_threshold', type: 'tinyint', unsigned: true, default: 100 })
   wetThreshold: number;
 
   @Column({ type: 'varchar', length: 30, default: 'plant' })
