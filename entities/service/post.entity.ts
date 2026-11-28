@@ -12,8 +12,8 @@ import {
 import { POST_CATEGORIES, type PostCategory } from '../../enums.js';
 import { UserProfile } from './user-profile.entity.js';
 
-/** service_db.posts — 커뮤니티 글. 응답 id는 문자열로 변환 */
-@Entity({ name: 'posts' })
+/** service.posts — 커뮤니티 글. 응답 id는 문자열로 변환 */
+@Entity({ schema: 'service', name: 'posts' })
 @Index('idx_posts_created', ['createdAt'])
 @Index('idx_posts_category_created', ['category', 'createdAt'])
 export class Post {
@@ -27,7 +27,7 @@ export class Post {
   @JoinColumn({ name: 'user_id' })
   user: Relation<UserProfile>;
 
-  @Column({ type: 'enum', enum: POST_CATEGORIES })
+  @Column({ type: 'enum', enum: POST_CATEGORIES, enumName: 'post_category' })
   category: PostCategory;
 
   /** NULL이면 응답에 '공통' */
@@ -43,18 +43,18 @@ export class Post {
   @Column({ name: 'photo_url', type: 'varchar', length: 500, nullable: true })
   photoUrl: string | null;
 
-  @Column({ name: 'like_count', type: 'int', unsigned: true, default: 0 })
+  @Column({ name: 'like_count', type: 'integer', default: 0 })
   likeCount: number;
 
-  @Column({ name: 'comment_count', type: 'int', unsigned: true, default: 0 })
+  @Column({ name: 'comment_count', type: 'integer', default: 0 })
   commentCount: number;
 
   @Column({ name: 'is_hidden', type: 'boolean', default: false })
   isHidden: boolean;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt: Date | null;
 }

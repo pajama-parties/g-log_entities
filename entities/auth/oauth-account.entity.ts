@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, Primary
 import { OAUTH_PROVIDERS, type OAuthProvider } from '../../enums.js';
 import { User } from './user.entity.js';
 
-/** auth_db.oauth_accounts — 카카오 연결 (POST /auth/kakao) */
-@Entity({ name: 'oauth_accounts' })
+/** auth.oauth_accounts — 카카오 연결 (POST /auth/kakao) */
+@Entity({ schema: 'auth', name: 'oauth_accounts' })
 @Index('uq_oauth_provider_user', ['provider', 'providerUserId'], { unique: true })
 @Index('uq_oauth_user_provider', ['userId', 'provider'], { unique: true })
 export class OAuthAccount {
@@ -17,7 +17,7 @@ export class OAuthAccount {
   @JoinColumn({ name: 'user_id' })
   user: Relation<User>;
 
-  @Column({ type: 'enum', enum: OAUTH_PROVIDERS })
+  @Column({ type: 'enum', enum: OAUTH_PROVIDERS, enumName: 'oauth_provider' })
   provider: OAuthProvider;
 
   /** 카카오 회원번호. 회원은 (provider, providerUserId)로만 찾음 */
@@ -29,16 +29,16 @@ export class OAuthAccount {
   providerEmail: string | null;
 
   /** 카카오톡 메시지 전송 동의자만 저장 (AES-GCM 암호문). 기본 조회에서 제외 */
-  @Column({ name: 'access_token_enc', type: 'varbinary', length: 512, nullable: true, select: false })
+  @Column({ name: 'access_token_enc', type: 'bytea', nullable: true, select: false })
   accessTokenEnc: Buffer | null;
 
-  @Column({ name: 'refresh_token_enc', type: 'varbinary', length: 512, nullable: true, select: false })
+  @Column({ name: 'refresh_token_enc', type: 'bytea', nullable: true, select: false })
   refreshTokenEnc: Buffer | null;
 
-  @Column({ name: 'token_expires_at', type: 'datetime', nullable: true })
+  @Column({ name: 'token_expires_at', type: 'timestamptz', nullable: true })
   tokenExpiresAt: Date | null;
 
   /** 응답 User.connectedAt */
-  @CreateDateColumn({ name: 'linked_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'linked_at', type: 'timestamptz' })
   linkedAt: Date;
 }

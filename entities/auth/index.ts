@@ -8,5 +8,5 @@ import { User } from './user.entity.js';
 
 export { AuthToken, DeviceCredential, LoginHistory, OAuthAccount, RefreshToken, RefreshTokenFamily, User };
 
-/** auth_db 엔티티 (연결 이름: AUTH_CONNECTION) */
+/** auth 스키마 엔티티 */
 export const AUTH_ENTITIES = [User, OAuthAccount, RefreshTokenFamily, RefreshToken, AuthToken, DeviceCredential, LoginHistory];

@@ -2,8 +2,8 @@ import { CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, type Re
 import { Post } from './post.entity.js';
 import { UserProfile } from './user-profile.entity.js';
 
-/** service_db.post_likes — 공감. (post_id, user_id) 복합 PK로 한 사람 1번 */
-@Entity({ name: 'post_likes' })
+/** service.post_likes — 공감. (post_id, user_id) 복합 PK로 한 사람 1번 */
+@Entity({ schema: 'service', name: 'post_likes' })
 export class PostLike {
   @PrimaryColumn({ name: 'post_id', type: 'bigint' })
   postId: number;
@@ -19,6 +19,6 @@ export class PostLike {
   @JoinColumn({ name: 'user_id' })
   user: Relation<UserProfile>;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 }

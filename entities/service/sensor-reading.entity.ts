@@ -3,8 +3,8 @@ import { MOISTURE_STATUSES, type MoistureStatus } from '../../enums.js';
 import { Device } from './device.entity.js';
 import { Plant } from './plant.entity.js';
 
-/** service_db.sensor_readings — 측정값 원본 (hourly·weekly 그래프) */
-@Entity({ name: 'sensor_readings' })
+/** service.sensor_readings — 측정값 원본 (hourly·weekly 그래프) */
+@Entity({ schema: 'service', name: 'sensor_readings' })
 @Index('idx_readings_plant_measured', ['plantId', 'measuredAt'])
 export class SensorReading {
   @PrimaryGeneratedColumn({ name: 'reading_id', type: 'bigint' })
@@ -25,18 +25,18 @@ export class SensorReading {
   @JoinColumn({ name: 'plant_id' })
   plant: Relation<Plant>;
 
-  @Column({ name: 'moisture_percent', type: 'tinyint', unsigned: true })
+  @Column({ name: 'moisture_percent', type: 'smallint' })
   moisturePercent: number;
 
-  @Column({ type: 'enum', enum: MOISTURE_STATUSES })
+  @Column({ type: 'enum', enum: MOISTURE_STATUSES, enumName: 'moisture_status' })
   status: MoistureStatus;
 
-  @Column({ name: 'battery_level', type: 'tinyint', unsigned: true, nullable: true })
+  @Column({ name: 'battery_level', type: 'smallint', nullable: true })
   batteryLevel: number | null;
 
-  @Column({ name: 'measured_at', type: 'datetime' })
+  @Column({ name: 'measured_at', type: 'timestamptz' })
   measuredAt: Date;
 
-  @Column({ name: 'received_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ name: 'received_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   receivedAt: Date;
 }

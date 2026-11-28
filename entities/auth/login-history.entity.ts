@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, Primary
 import { LOGIN_METHODS, type LoginMethod } from '../../enums.js';
 import { User } from './user.entity.js';
 
-/** auth_db.login_history — 로그인 시도 기록 */
-@Entity({ name: 'login_history' })
+/** auth.login_history — 로그인 시도 기록 */
+@Entity({ schema: 'auth', name: 'login_history' })
 export class LoginHistory {
   @PrimaryGeneratedColumn({ name: 'login_id', type: 'bigint' })
   id: number;
@@ -16,7 +16,7 @@ export class LoginHistory {
   @JoinColumn({ name: 'user_id' })
   user: Relation<User> | null;
 
-  @Column({ type: 'enum', enum: LOGIN_METHODS })
+  @Column({ type: 'enum', enum: LOGIN_METHODS, enumName: 'login_method' })
   method: LoginMethod;
 
   @Column({ type: 'boolean' })
@@ -26,6 +26,6 @@ export class LoginHistory {
   ipAddress: string | null;
 
   @Index('idx_login_history_created_at')
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 }

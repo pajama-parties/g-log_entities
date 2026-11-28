@@ -3,8 +3,8 @@ import { CHART_PERIODS, type ChartPeriod } from '../../enums.js';
 import { Plant } from './plant.entity.js';
 import { Post } from './post.entity.js';
 
-/** service_db.post_attachments — 글에 고정한 그래프 (Post.attach). 글 1개당 0~1개 */
-@Entity({ name: 'post_attachments' })
+/** service.post_attachments — 글에 고정한 그래프 (Post.attach). 글 1개당 0~1개 */
+@Entity({ schema: 'service', name: 'post_attachments' })
 export class PostAttachment {
   @PrimaryColumn({ name: 'post_id', type: 'bigint' })
   postId: number;
@@ -24,16 +24,16 @@ export class PostAttachment {
   @Column({ type: 'varchar', length: 100 })
   label: string;
 
-  @Column({ type: 'enum', enum: CHART_PERIODS })
+  @Column({ type: 'enum', enum: CHART_PERIODS, enumName: 'chart_period' })
   period: ChartPeriod;
 
   /** 그 시점 hourly 또는 weekly 값 복사본 */
-  @Column({ type: 'json' })
+  @Column({ type: 'jsonb' })
   points: number[];
 
-  @Column({ name: 'lower_threshold', type: 'tinyint', unsigned: true })
+  @Column({ name: 'lower_threshold', type: 'smallint' })
   lowerThreshold: number;
 
-  @Column({ name: 'upper_threshold', type: 'tinyint', unsigned: true })
+  @Column({ name: 'upper_threshold', type: 'smallint' })
   upperThreshold: number;
 }

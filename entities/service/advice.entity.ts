@@ -3,8 +3,8 @@ import { ADVICE_TONES, type AdviceTone } from '../../enums.js';
 import { Plant } from './plant.entity.js';
 import { UserProfile } from './user-profile.entity.js';
 
-/** service_db.advices — 조언 기록 (GET·POST /advices, PUT /advices/{id}/feedback) */
-@Entity({ name: 'advices' })
+/** service.advices — 조언 기록 (GET·POST /advices, PUT /advices/{id}/feedback) */
+@Entity({ schema: 'service', name: 'advices' })
 @Index('idx_advices_user_created', ['userId', 'createdAt'])
 export class Advice {
   @PrimaryGeneratedColumn({ name: 'advice_id', type: 'bigint' })
@@ -24,11 +24,11 @@ export class Advice {
   @JoinColumn({ name: 'plant_id' })
   plant: Relation<Plant>;
 
-  @Column({ type: 'enum', enum: ADVICE_TONES })
+  @Column({ type: 'enum', enum: ADVICE_TONES, enumName: 'advice_tone' })
   tone: AdviceTone;
 
   /** value — 조언 받은 시점 수분. 오프라인이면 NULL */
-  @Column({ type: 'tinyint', unsigned: true, nullable: true })
+  @Column({ type: 'smallint', nullable: true })
   moisture: number | null;
 
   /** text */
@@ -42,9 +42,9 @@ export class Advice {
   @Column({ type: 'boolean', nullable: true })
   helpful: boolean | null;
 
-  @Column({ name: 'feedback_at', type: 'datetime', nullable: true })
+  @Column({ name: 'feedback_at', type: 'timestamptz', nullable: true })
   feedbackAt: Date | null;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 }

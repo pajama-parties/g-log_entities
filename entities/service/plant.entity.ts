@@ -13,10 +13,10 @@ import {
 import { MOISTURE_STATUSES, type MoistureStatus } from '../../enums.js';
 import { UserProfile } from './user-profile.entity.js';
 
-/** service_db.plants — 화분 (GET /pots, /pots/managed, POST /pots) */
-@Entity({ name: 'plants' })
+/** service.plants — 화분 (GET /pots, /pots/managed, POST /pots) */
+@Entity({ schema: 'service', name: 'plants' })
 @Index('idx_plants_user', ['userId'])
-// TypeORM은 MySQL CHECK를 마이그레이션에 만들지 않음 → 마이그레이션에 직접 추가함 (InitService, PlantThresholdDefault)
+// PostgreSQL에서는 TypeORM이 이 CHECK 제약을 마이그레이션에 자동으로 생성함
 @Check('chk_plants_threshold', 'dry_threshold >= 0 AND wet_threshold <= 100 AND dry_threshold < wet_threshold')
 export class Plant {
   @PrimaryGeneratedColumn({ name: 'plant_id', type: 'bigint' })
@@ -44,11 +44,11 @@ export class Plant {
   place: string | null;
 
   /** range[0] / Range.lower (건조 기준 %). 기본 0 = 사용자가 기준을 정하기 전까지 건조 경보 없음 */
-  @Column({ name: 'dry_threshold', type: 'tinyint', unsigned: true, default: 0 })
+  @Column({ name: 'dry_threshold', type: 'smallint', default: 0 })
   dryThreshold: number;
 
   /** range[1] / Range.upper (과습 기준 %). 기본 100 = 사용자가 기준을 정하기 전까지 과습 경보 없음 */
-  @Column({ name: 'wet_threshold', type: 'tinyint', unsigned: true, default: 100 })
+  @Column({ name: 'wet_threshold', type: 'smallint', default: 100 })
   wetThreshold: number;
 
   @Column({ type: 'varchar', length: 30, default: 'plant' })
@@ -62,20 +62,20 @@ export class Plant {
   photoUrl: string | null;
 
   /** value (현재 수분 %) 캐시 */
-  @Column({ name: 'last_moisture', type: 'tinyint', unsigned: true, nullable: true })
+  @Column({ name: 'last_moisture', type: 'smallint', nullable: true })
   lastMoisture: number | null;
 
   /** 판정 캐시. 응답 status의 오프라인/수집 대기는 계산 */
-  @Column({ name: 'last_status', type: 'enum', enum: MOISTURE_STATUSES, nullable: true })
+  @Column({ name: 'last_status', type: 'enum', enum: MOISTURE_STATUSES, enumName: 'moisture_status', nullable: true })
   lastStatus: MoistureStatus | null;
 
-  @Column({ name: 'last_measured_at', type: 'datetime', nullable: true })
+  @Column({ name: 'last_measured_at', type: 'timestamptz', nullable: true })
   lastMeasuredAt: Date | null;
 
   /** growingDays 계산 기준 */
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt: Date | null;
 }

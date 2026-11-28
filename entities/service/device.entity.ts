@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, Prim
 import { Plant } from './plant.entity.js';
 import { UserProfile } from './user-profile.entity.js';
 
-/** service_db.devices — 수분 센서. 센서 1 : 화분 1 */
-@Entity({ name: 'devices' })
+/** service.devices — 수분 센서. 센서 1 : 화분 1 */
+@Entity({ schema: 'service', name: 'devices' })
 export class Device {
   @PrimaryGeneratedColumn({ name: 'device_id', type: 'bigint' })
   id: number;
@@ -27,22 +27,22 @@ export class Device {
   @JoinColumn({ name: 'plant_id' })
   plant: Relation<Plant> | null;
 
-  @Column({ name: 'battery_level', type: 'tinyint', unsigned: true, nullable: true })
+  @Column({ name: 'battery_level', type: 'smallint', nullable: true })
   batteryLevel: number | null;
 
-  @Column({ name: 'report_interval_sec', type: 'int', unsigned: true, default: 600 })
+  @Column({ name: 'report_interval_sec', type: 'integer', default: 600 })
   reportIntervalSec: number;
 
   @Column({ name: 'firmware_version', type: 'varchar', length: 20, nullable: true })
   firmwareVersion: string | null;
 
   /** 2시간 넘게 값이 없으면 오프라인 */
-  @Column({ name: 'last_seen_at', type: 'datetime', nullable: true })
+  @Column({ name: 'last_seen_at', type: 'timestamptz', nullable: true })
   lastSeenAt: Date | null;
 
-  @Column({ name: 'registered_at', type: 'datetime', nullable: true })
+  @Column({ name: 'registered_at', type: 'timestamptz', nullable: true })
   registeredAt: Date | null;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 }

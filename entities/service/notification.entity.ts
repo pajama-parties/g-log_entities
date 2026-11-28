@@ -14,10 +14,10 @@ import { Plant } from './plant.entity.js';
 import { UserProfile } from './user-profile.entity.js';
 
 /**
- * service_db.notifications — 알림함 + 주간 경보 요약.
+ * service.notifications — 알림함 + 주간 경보 요약.
  * 삭제는 소프트 삭제: GET /notices/weekly는 withDeleted로 지운 알림도 셈.
  */
-@Entity({ name: 'notifications' })
+@Entity({ schema: 'service', name: 'notifications' })
 @Index('idx_notifications_user_created', ['userId', 'createdAt'])
 export class Notification {
   @PrimaryGeneratedColumn({ name: 'notification_id', type: 'bigint' })
@@ -38,7 +38,7 @@ export class Notification {
   @JoinColumn({ name: 'plant_id' })
   plant: Relation<Plant> | null;
 
-  @Column({ type: 'enum', enum: NOTICE_TONES })
+  @Column({ type: 'enum', enum: NOTICE_TONES, enumName: 'notice_tone' })
   tone: NoticeTone;
 
   @Column({ type: 'varchar', length: 100 })
@@ -51,12 +51,12 @@ export class Notification {
   @Column({ name: 'is_read', type: 'boolean', default: false })
   isRead: boolean;
 
-  @Column({ name: 'read_at', type: 'datetime', nullable: true })
+  @Column({ name: 'read_at', type: 'timestamptz', nullable: true })
   readAt: Date | null;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt: Date | null;
 }

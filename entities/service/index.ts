@@ -26,7 +26,7 @@ export {
   Watering,
 };
 
-/** service_db 엔티티 (기본 연결) */
+/** service 스키마 엔티티 */
 export const SERVICE_ENTITIES = [
   UserProfile,
   Plant,

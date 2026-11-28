@@ -12,8 +12,8 @@ import {
 import { Post } from './post.entity.js';
 import { UserProfile } from './user-profile.entity.js';
 
-/** service_db.comments — 댓글. 응답 id는 문자열로 변환 */
-@Entity({ name: 'comments' })
+/** service.comments — 댓글. 응답 id는 문자열로 변환 */
+@Entity({ schema: 'service', name: 'comments' })
 @Index('idx_comments_post', ['postId'])
 export class Comment {
   @PrimaryGeneratedColumn({ name: 'comment_id', type: 'bigint' })
@@ -40,9 +40,9 @@ export class Comment {
   @Column({ name: 'is_hidden', type: 'boolean', default: false })
   isHidden: boolean;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt: Date | null;
 }
